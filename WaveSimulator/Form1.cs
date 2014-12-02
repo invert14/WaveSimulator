@@ -79,21 +79,6 @@ namespace WaveSimulator
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            
-//            c[s / 2, s / 2] = -2.0;
-//            p[s / 2, s / 2] = -2.0;
-
-
-//            for (int i = s/2 - radius; i <= s/2 + radius; i++)
-//            {
-//                for (int j = s/2 - radius; j <= s/2 + radius; j++)
-//                {
-//                    double val = -(2*Math.Cos(Math.PI/(radius*2)*j)*Math.Cos(Math.PI/(radius*2)*i));
-//                    c[i, j] = val;
-//                    p[i, j] = c[i, j];
-//                }
-//            }
-
             bool remember;
             int rememberIter = 0;
 
@@ -109,8 +94,6 @@ namespace WaveSimulator
                     remember = false;
                 bw.ReportProgress(100*iter/maxIter);
 
-                // fill in rgbValues, e.g. with a for loop over an input array
-
                 Random random = new Random();
                 for (int x = 1; x < s - 1; x++)
                 {
@@ -121,10 +104,7 @@ namespace WaveSimulator
                                      r*r*(c[x, y - 1] - c[x, y]) +
                                      r*r*(c[x, y + 1] - c[x, y]) +
                                      2*c[x, y] - p[x, y];
-//                        double val = (2*c[x, y] - p[x, y] +
-//                                      r*r*(c[x - 1, y] + c[x + 1, y] + c[x, y - 1] + c[x, y + 1] - 4*c[x, y]));
 
-                        int pom = (int) (val*1000);
                         f[x, y] = val;
 
                         f[x, 0] = (2*c[x, 0] + (r - 1)*p[x, 0] +
@@ -145,7 +125,6 @@ namespace WaveSimulator
                         f[s-1, 0] = (2 * c[s-1, 0] + (r - 1) * p[s-1, 0] +
                             2 * r * r * (c[s-2, 0] + c[s-1, 1] - 2 * c[s-1, 0])) / (1 + r);
 
-//                        rgbValues[x*bmpData.Stride + y] = (byte) (c[x, y]/ratio*256);
 
                         if (remember)
                         {
@@ -252,7 +231,7 @@ namespace WaveSimulator
 
         private void StartWave(int cx, int cy)
         {
-            int radius = 2;
+            int radius = 1;
             for (int x = cx - radius; x <= cx + radius; x++)
             {
                 for (int y = cy - radius; y <= cy + radius; y++)
@@ -289,7 +268,10 @@ namespace WaveSimulator
         {
             InitializeGrid();
             mem.Clear();
-            UpdateBitmap(c);
+            if (!bw.IsBusy)
+            {
+                UpdateBitmap(c);
+            }
         }
 
         private void updateButton_Click(object sender, EventArgs e)
